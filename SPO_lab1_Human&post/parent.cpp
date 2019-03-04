@@ -13,8 +13,8 @@
 
 using namespace std;
 
-void postRequest(char* departureType, char* money);
-string decryptExitCode(int exitCode);
+int postRequest(char* departureType, char* money);
+char* decryptExitCode(int exitCode);
 
 int main(int argc, const char * argv[]) {
     
@@ -23,18 +23,19 @@ int main(int argc, const char * argv[]) {
     
     while (true)
     {
+        clear();
         refresh();
-        cout << "\rPlease, select an action:\n";
-        cout << "\r1) Send a letter(10 BYN).\n";
-        cout << "\r2) Send a parcel(50 BYN).\n";
-        cout << "\r3) End work.\n\r";
-        cout << "\rYour choice: ";
+        move(1,0);
+        printw("\rPlease, select an action:\n");
+        printw("\r1) Send a letter(10 BYN).\n");
+        printw("\r2) Send a parcel(50 BYN).\n");
+        printw("\r3) End work.\n\r");
+        printw("\rYour choice: ");
+        
         int choice = 0;
-        cin >> choice;
-        cout << endl;
-        
         char* departureType;
-        
+        scanw("%d", &choice);
+
         switch (choice)
         {
             case 1: {
@@ -46,39 +47,47 @@ int main(int argc, const char * argv[]) {
                 break;
             }
             case 3: {
-                cout << "\rGoodbye!\n";
+                printw("\rGoodbye!");
                 endwin();
                 return 0;
             }
             default: {
-                cout << "\rYour choice is incorrect.\n";
+                printw("\rYour choice is incorrect.");
                 endwin();
                 return 0;
-//                continue;
             }
         }
-        
-        cout << "\rPlease, deposit money: ";
+
+        printw("\rPlease, deposit money: ");
         char money[10];
-        cin >> money;
+        scanw("%s", &money);
+
+        int exitCode = postRequest(departureType, money);
+        printw("\r%s", decryptExitCode(exitCode));
         
-        postRequest(departureType, money);
+        char c = 0;
+        while(c != 'q')
+        {
+            halfdelay(2);
+            c = getch();
+            
+            refresh();
+        }
     }
     
+    endwin();
     return 0;
 }
 
-void postRequest(char* departureType, char* money) {
+int postRequest(char* departureType, char* money) {
     
     pid_t pid = fork();
-    
-    
     time_t ltime;
     int status = 0;
     
     switch (pid) {
         case -1: {
-            cout << "Fork error.\n\r";
+            printw("\rFork error.");
             break;
         }
             
@@ -95,7 +104,7 @@ void postRequest(char* departureType, char* money) {
             {
                 refresh();
                 time(&ltime);
-                move(9,0);
+                move(20,0);
                 printw(ctime( &ltime ));
                 
                 if(waitpid(pid,&status,WNOHANG)>0)
@@ -103,12 +112,10 @@ void postRequest(char* departureType, char* money) {
                 
                 napms(10);
             }
-            move(20,0);
             
             if (WIFEXITED(status))
             {
-                move(21,0);
-                cout << "\r" << decryptExitCode((int)WEXITSTATUS(status)) << "\n";
+                return (int)WEXITSTATUS(status);
             }
             
             break;
@@ -116,7 +123,7 @@ void postRequest(char* departureType, char* money) {
     }
 }
 
-string decryptExitCode(int exitCode) {
+char* decryptExitCode(int exitCode) {
     
     switch (exitCode) {
         case 0:
