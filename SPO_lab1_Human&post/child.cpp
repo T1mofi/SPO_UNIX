@@ -40,18 +40,14 @@ int main(int argc, char* argv[]) {
     
     file.close();
     
-    //    cout << "You deposit: " << atoi(argv[1]) << "\n\r";
     credit += atoi(argv[1]);
-    //    cout << "Credit: " << credit << "\n\r";
     string departureType = argv[2];
-    //    cout << "Departure type: " << departureType << "\n\r";
     
         if (departureType == "letter") {
             if(quantitySendLetters < 10) {
                 if (credit >= 10) {
                     quantitySendLetters++;
                     credit -= 10;
-    //                cout << "Sending letter..." << "\n\r";
                 } else {
                     waitExit();
                     return LACK_MONEY;
@@ -66,7 +62,6 @@ int main(int argc, char* argv[]) {
                 if (credit >= 50) {
                     quantitySendParcels++;
                     credit -= 50;
-    //                cout << "Sending parcel..." << "\n\r";
                 } else {
                     waitExit();
                     return LACK_MONEY;
@@ -79,7 +74,6 @@ int main(int argc, char* argv[]) {
 
         file.open(filePath, ios::out);
         if (!file) {
-    //        cout << "file is not open for wriring!";            //!!!!!!!!!!!!!!!!!!!!
             return - 1;
         }
         file << quantitySendLetters << " " << quantitySendParcels << " " << credit;
@@ -105,5 +99,4 @@ void waitExit() {
         
         refresh();
     }
-//    endwin();
 }
