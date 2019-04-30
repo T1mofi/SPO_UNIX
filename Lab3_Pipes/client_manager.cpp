@@ -27,7 +27,6 @@ int main(int argc, const char * argv[]) {
                 
             case '+': {
                 
-                cout << "choose +" << endl;
                 pid_t pid = creatNewPrinter();
                 printerPids.push_back(pid);
                 

@@ -20,6 +20,7 @@ using namespace std;
 void makePipe(string pipeName);
 int  openPipe(string pipeName);
 string readFromPipe(int pipeDescriptor);
+void runManagerProcess();
 
 
 const int MSG_SIZE = 31;
@@ -28,10 +29,10 @@ const string pipeName = "named_pipe";
 
 int main(int argc, const char * argv[]) {
     
-    //run client_manager process
+    runManagerProcess();
     
     makePipe(pipeName);
-    
+
     int pipeDescriptor = openPipe(pipeName);
     
     while (true) {
@@ -87,4 +88,32 @@ string readFromPipe(int pipeDescriptor) {
     string message = cmessage;
     
     return message;
+}
+
+void runManagerProcess() {
+    
+    pid_t pid = fork();
+    
+    switch (pid)
+    {
+        case -1: {
+            
+            cout << "FORK ERROR" << endl;
+            
+        } break;
+            
+        case  0: {
+            
+            char* const argin[] = {"Manager", NULL};
+            execvp("./Manager", argin);
+            cout << "cannot run child pr" << endl;
+            exit(-1);
+            
+        } break;
+            
+        default:
+            break;
+            
+    }
+    
 }
