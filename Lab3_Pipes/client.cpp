@@ -6,11 +6,19 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <signal.h>
+
 
 using namespace std;
 
 
-//make handler for terminate signal
+int closeFlag = 0;
+
+void closeProcess(int sigNum) {
+    
+    closeFlag = 1;
+    
+}
 
 
 int openPipe(string pipeName);
@@ -23,12 +31,22 @@ const string pipeName = "named_pipe";
 
 int main(int argc, const char * argv[]) {
     
+    struct sigaction close;
+    close.sa_handler = closeProcess;
+    sigaction(SIGUSR1, &close, NULL);
+    
     int  pipeDescriptor = openPipe(pipeName);
     
-    for (int i = 0; i < 3; i++) {
+    while (true) {
         
         writeToPipe(to_string(getpid()), pipeDescriptor);
         sleep(1);
+        
+        if (closeFlag == 1) {
+            
+            exit(0);
+            
+        }
         
     }
     
