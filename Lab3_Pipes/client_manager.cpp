@@ -94,7 +94,7 @@ void closePrinter(vector<pid_t> & printerPids) {
         pid_t closedPrinerPID = printerPids.back();
         printerPids.pop_back();
         
-        kill(closedPrinerPID, SIGTERM);
+        kill(closedPrinerPID, SIGUSR1);
         
     } else {
         
@@ -105,6 +105,12 @@ void closePrinter(vector<pid_t> & printerPids) {
 }
 
 void closeAllPrinters(vector<pid_t> & printerPids) {
+    
+    for (pid_t pid : printerPids) {
+        
+        kill(pid, SIGUSR1);
+        
+    }
     
     printerPids.clear();
     
