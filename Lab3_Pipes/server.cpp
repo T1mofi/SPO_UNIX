@@ -11,10 +11,19 @@
 
 #include <errno.h>
 
+#include <signal.h>
+
 
 using namespace std;
 
-//make handler for terminate signal
+
+int closeFlag = 0;
+
+void closeProcess(int sigNum) {
+    
+    closeFlag = 1;
+    
+}
 
 
 void makePipe(string pipeName);
@@ -29,6 +38,10 @@ const string pipeName = "named_pipe";
 
 int main(int argc, const char * argv[]) {
     
+    struct sigaction close;
+    close.sa_handler = closeProcess;
+    sigaction(SIGUSR1, &close, NULL);
+    
     runManagerProcess();
     
     makePipe(pipeName);
@@ -38,7 +51,16 @@ int main(int argc, const char * argv[]) {
     while (true) {
         
         string message = readFromPipe(pipeDescriptor);
-        cout << message << endl;
+        
+        if (closeFlag == 1) {
+
+            exit(0);
+            
+        } else {
+            
+            cout << message << endl;
+            
+        }
         
     }
 
@@ -80,8 +102,8 @@ string readFromPipe(int pipeDescriptor) {
     
     if (read(pipeDescriptor, cmessage, MSG_SIZE + 1) < 1) {
         
-        cout << "Server: Read from pipe error." << endl;
-        exit(-1);
+//        cout << "Server: Read from pipe error.." << endl;
+        return "";
         
     }
         

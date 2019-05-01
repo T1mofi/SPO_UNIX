@@ -5,6 +5,8 @@
 
 #include <unistd.h>
 
+#include "Tgetch.cpp"
+
 
 using namespace std;
 
@@ -23,9 +25,9 @@ int main(int argc, const char * argv[]) {
     
     while (true) {
         
-        switch (getchar()) {
+        switch (getch()) {
                 
-            case '+': {
+            case '=': {
                 
                 pid_t pid = creatNewPrinter();
                 printerPids.push_back(pid);
@@ -50,7 +52,6 @@ int main(int argc, const char * argv[]) {
                 break;
                 
         }
-        cin.ignore(1);
         
     }
     
@@ -118,6 +119,6 @@ void closeAllPrinters(vector<pid_t> & printerPids) {
 
 void closeServer() {
     
-    kill(getppid(), SIGTERM);
+    kill(getppid(), SIGUSR1);
     
 }
