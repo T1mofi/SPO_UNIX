@@ -5,6 +5,7 @@
 
 #include <unistd.h>
 
+#include "Tstr.cpp"
 #include "Tgetch.cpp"
 
 #include <semaphore.h>
@@ -18,7 +19,7 @@ void  closePrinter(vector<pid_t> & printerPids);
 void  closeAllPrinters(vector<pid_t> & printerPids);
 void  closeServer();
 
-#define SEMAPHORE_NAME "/my_nam"
+const string SEMAPHORE_NAME = "/my_nam";
 
 
 int main(int argc, const char * argv[]) {
@@ -27,7 +28,7 @@ int main(int argc, const char * argv[]) {
     
     sem_t *sem;
     
-    if ( (sem = sem_open(SEMAPHORE_NAME, O_CREAT, 0777, 0)) == SEM_FAILED ) {
+    if ( (sem = sem_open(str_to_cstr(SEMAPHORE_NAME), O_CREAT, 0777, 0)) == SEM_FAILED ) {
         return 1;
     }
     

@@ -28,8 +28,8 @@ void writeToPipe(string message, int pipeDescriptor);
 
 
 const int MSG_SIZE = 31;
-const string pipeName = "named_pipe";
-#define SEMAPHORE_NAME "/my_nam"
+const string PIPE_NAME = "named_pipe";
+const string SEMAPHORE_NAME = "/my_nam";
 
 
 int main(int argc, const char * argv[]) {
@@ -38,11 +38,11 @@ int main(int argc, const char * argv[]) {
     closePr.sa_handler = closeProcess;
     sigaction(SIGUSR1, &closePr, NULL);
     
-    int  pipeDescriptor = openPipe(pipeName);
+    int  pipeDescriptor = openPipe(PIPE_NAME);
     
     sem_t *sem;
     
-    if ( (sem = sem_open(SEMAPHORE_NAME, 0)) == SEM_FAILED ) {
+    if ( (sem = sem_open(str_to_cstr(SEMAPHORE_NAME), 0)) == SEM_FAILED ) {
         return 1;
     }
     
