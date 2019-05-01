@@ -69,8 +69,6 @@ int main(int argc, const char * argv[]) {
             
             case 'q': {
                 
-                cout << endl << endl << "quit" << endl << endl;
-                
                 if (printerPids.size()) {
                     
                     closeAllPrinters(printerPids);
@@ -80,7 +78,7 @@ int main(int argc, const char * argv[]) {
                     
                 }
                 
-                sleep(5);
+                sleep(1);
                 closeServer();
                 sem_close(sem);
                 

@@ -50,8 +50,7 @@ int main(int argc, const char * argv[]) {
         
         if (sem_wait(sem) == 0)
         {
-            
-            cout << endl << endl << "Client: wait work fine" << endl;
+    
             writeToPipe(to_string(getpid()), pipeDescriptor);
             sem_post(sem);
             
@@ -86,6 +85,13 @@ int openPipe(string pipeName) {
 }
 
 void writeToPipe(string message, int pipeDescriptor) {
+    
+    if (write(pipeDescriptor, str_to_cstr(""), MSG_SIZE + 1) < 0) {
+        
+        cout << "Write error" << endl;
+        exit(-1);
+        
+    }
     
     for (int i = 0; i < 3; ++i) {
         

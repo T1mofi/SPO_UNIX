@@ -56,8 +56,7 @@ int main(int argc, const char * argv[]) {
         
         if (closeFlag == 1) {
             
-            close(pipeDescriptor);
-            exit(0);
+            break;
             
         } else {
             
@@ -66,6 +65,10 @@ int main(int argc, const char * argv[]) {
         }
         
     }
+    
+    close(pipeDescriptor);
+    
+    cout << endl << "End program." << endl;
 
     return 0;
 }
