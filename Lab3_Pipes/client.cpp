@@ -8,6 +8,8 @@
 
 #include <signal.h>
 
+#include <semaphore.h>
+
 
 using namespace std;
 
@@ -27,6 +29,7 @@ void writeToPipe(string message, int pipeDescriptor);
 
 const int MSG_SIZE = 31;
 const string pipeName = "named_pipe";
+#define SEMAPHORE_NAME "/my_name"
 
 
 int main(int argc, const char * argv[]) {
@@ -37,13 +40,21 @@ int main(int argc, const char * argv[]) {
     
     int  pipeDescriptor = openPipe(pipeName);
     
+    sem_t *sem;
+    
+    if ( (sem = sem_open(SEMAPHORE_NAME, 0)) == SEM_FAILED ) {
+        return 1;
+    }
+    
     while (true) {
         
+        sem_wait(sem);
         writeToPipe(to_string(getpid()), pipeDescriptor);
-        sleep(1);
+        sem_post(sem);
         
         if (closeFlag == 1) {
             
+            sem_close(sem);
             close(pipeDescriptor);
             exit(0);
             
