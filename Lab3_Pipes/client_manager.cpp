@@ -18,7 +18,7 @@ void  closePrinter(vector<pid_t> & printerPids);
 void  closeAllPrinters(vector<pid_t> & printerPids);
 void  closeServer();
 
-#define SEMAPHORE_NAME "/my_name"
+#define SEMAPHORE_NAME "/my_nam"
 
 
 int main(int argc, const char * argv[]) {

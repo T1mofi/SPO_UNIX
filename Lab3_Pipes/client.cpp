@@ -29,7 +29,7 @@ void writeToPipe(string message, int pipeDescriptor);
 
 const int MSG_SIZE = 31;
 const string pipeName = "named_pipe";
-#define SEMAPHORE_NAME "/my_name"
+#define SEMAPHORE_NAME "/my_nam"
 
 
 int main(int argc, const char * argv[]) {
@@ -48,9 +48,14 @@ int main(int argc, const char * argv[]) {
     
     while (true) {
         
-        sem_wait(sem);
-        writeToPipe(to_string(getpid()), pipeDescriptor);
-        sem_post(sem);
+        if (sem_wait(sem) == 0)
+        {
+            
+            cout << endl << endl << "Client: wait work fine" << endl;
+            writeToPipe(to_string(getpid()), pipeDescriptor);
+            sem_post(sem);
+            
+        }
         
         if (closeFlag == 1) {
             
