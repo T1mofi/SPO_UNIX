@@ -38,9 +38,10 @@ const string pipeName = "named_pipe";
 
 int main(int argc, const char * argv[]) {
     
-    struct sigaction close;
-    close.sa_handler = closeProcess;
-    sigaction(SIGUSR1, &close, NULL);
+    //close process handler
+    struct sigaction closePr;
+    closePr.sa_handler = closeProcess;
+    sigaction(SIGUSR1, &closePr, NULL);
     
     runManagerProcess();
     
@@ -48,12 +49,14 @@ int main(int argc, const char * argv[]) {
 
     int pipeDescriptor = openPipe(pipeName);
     
+    //Reading from pipe until closeFlag != 1
     while (true) {
         
         string message = readFromPipe(pipeDescriptor);
         
         if (closeFlag == 1) {
-
+            
+            close(pipeDescriptor);
             exit(0);
             
         } else {

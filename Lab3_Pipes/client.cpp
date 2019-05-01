@@ -31,9 +31,9 @@ const string pipeName = "named_pipe";
 
 int main(int argc, const char * argv[]) {
     
-    struct sigaction close;
-    close.sa_handler = closeProcess;
-    sigaction(SIGUSR1, &close, NULL);
+    struct sigaction closePr;
+    closePr.sa_handler = closeProcess;
+    sigaction(SIGUSR1, &closePr, NULL);
     
     int  pipeDescriptor = openPipe(pipeName);
     
@@ -44,6 +44,7 @@ int main(int argc, const char * argv[]) {
         
         if (closeFlag == 1) {
             
+            close(pipeDescriptor);
             exit(0);
             
         }
@@ -70,11 +71,15 @@ int openPipe(string pipeName) {
 
 void writeToPipe(string message, int pipeDescriptor) {
     
-    if (write(pipeDescriptor, str_to_cstr(message), MSG_SIZE + 1) < 0) {
+    for (int i = 0; i < 3; ++i) {
         
-        cout << "Write error" << endl;
-        exit(-1);
+        if (write(pipeDescriptor, str_to_cstr(message), MSG_SIZE + 1) < 0) {
+            
+            cout << "Write error" << endl;
+            exit(-1);
+            
+        }
+        sleep(1);
         
     }
-    
 }
